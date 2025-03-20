@@ -3,3 +3,4 @@ pub mod connection;
 pub mod hash_password;
 pub mod models;
 pub mod schema;
+pub mod totp_verification;

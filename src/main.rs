@@ -2,8 +2,9 @@ use actix_cors::Cors;
 use actix_web::{http, post, web::Json, App, HttpResponse, HttpServer};
 use e_learning_cargo::{
     app_users::create_app_user::create_app_user,
-    hash_password::hash_password::hash_custom_password,
+    hash_password::{hash_password::hash_custom_password, verify_password::verify_password},
     models::{AppUsers, AppUsersReturn},
+    totp_verification::totp_verification_one::generate_totp,
 };
 
 #[post("/create_app_user_server")]
@@ -38,6 +39,16 @@ pub async fn create_app_user_server(data: Json<AppUsers>) -> HttpResponse {
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
+    let generated_otp = generate_totp("OBWGC2LOFVZXI4TJNZTS243FMNZGK5BNGEZDG".to_string());
+    let hashed_otp = hash_custom_password(&generated_otp);
+    println!("{}", generated_otp);
+    let matches = verify_password(hashed_otp, generated_otp);
+    if matches {
+        println!("login successfully");
+    } else {
+        println!("Wrogn otp");
+    }
+
     HttpServer::new(|| {
         App::new()
             .wrap(
