@@ -91,17 +91,7 @@ pub async fn send_otp(data: Json<Otp>) -> impl Responder {
 }
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    // let generated_otp = generate_totp("OBWGC2LOFVZXI4TJNZTS243FMNZGK5BNGEZDG".to_string());
-    // let hashed_otp = hash_custom_password(&generated_otp);
-    // println!("{}", generated_otp);
-    // let matches = verify_password(hashed_otp, generated_otp);
-    // if matches {
-    //     println!("login successfully");
-    // } else {
-    //     println!("Wrong otp");
-    // }
     println!("done");
-    // email("smongare2004@gmail.com");
     HttpServer::new(|| {
         App::new()
             .wrap(
