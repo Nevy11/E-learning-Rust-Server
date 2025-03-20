@@ -3,7 +3,7 @@
 diesel::table! {
     app_users (username) {
         username -> Varchar,
-        useremail -> Nullable<Varchar>,
+        useremail -> Varchar,
         userpassword -> Varchar,
     }
 }
