@@ -3,19 +3,6 @@
 version = 4
 
 [[package]]
-name = "E-learningCargo"
-version = "0.1.0"
-dependencies = [
- "actix",
- "actix-cors",
- "actix-multipart",
- "actix-web",
- "argon2",
- "diesel",
- "dotenvy",
-]
-
-[[package]]
 name = "actix"
 version = "0.13.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -658,6 +645,20 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "e-learning_cargo"
+version = "0.1.0"
+dependencies = [
+ "actix",
+ "actix-cors",
+ "actix-multipart",
+ "actix-web",
+ "argon2",
+ "diesel",
+ "dotenvy",
+ "rand_core 0.9.3",
 ]
 
 [[package]]
