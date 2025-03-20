@@ -3,6 +3,7 @@
 version = 4
 
 [[package]]
+<<<<<<< HEAD
 name = "E-learningCargo"
 version = "0.1.0"
 dependencies = [
@@ -15,6 +16,30 @@ dependencies = [
  "dotenvy",
  "serde",
  "serde_json",
+=======
+name = "actix"
+version = "0.13.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de7fa236829ba0841304542f7614c42b80fca007455315c45c785ccfa873a85b"
+dependencies = [
+ "actix-macros",
+ "actix-rt",
+ "actix_derive",
+ "bitflags",
+ "bytes",
+ "crossbeam-channel",
+ "futures-core",
+ "futures-sink",
+ "futures-task",
+ "futures-util",
+ "log",
+ "once_cell",
+ "parking_lot",
+ "pin-project-lite",
+ "smallvec",
+ "tokio",
+ "tokio-util",
+>>>>>>> d79ce8ff20809f45e0365518d1879f28ea578206
 ]
 
 [[package]]
@@ -662,6 +687,20 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "e-learning_cargo"
+version = "0.1.0"
+dependencies = [
+ "actix",
+ "actix-cors",
+ "actix-multipart",
+ "actix-web",
+ "argon2",
+ "diesel",
+ "dotenvy",
+ "rand_core 0.9.3",
 ]
 
 [[package]]
