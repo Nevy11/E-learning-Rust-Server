@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 actix-server = "2.5.0"
 diesel = "2.2.8"
+dotenvy = "0.15.7"
