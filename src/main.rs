@@ -14,9 +14,9 @@ use e_learning_cargo::{
 #[post("/create_app_user_server")]
 pub async fn create_app_user_server(data: Json<AppUsers>) -> HttpResponse {
     let data_to_create = AppUsers {
-        username: data.username.clone(),
-        useremail: data.useremail.clone(),
-        userpassword: hash_custom_password(&data.userpassword.clone()),
+        username: data.username.clone().to_uppercase(),
+        useremail: data.useremail.clone().to_uppercase(),
+        userpassword: data.userpassword.clone(),
     };
     let created_data: Result<AppUsers, diesel::result::Error> = create_app_user(data_to_create);
     match created_data {
