@@ -40,6 +40,7 @@ pub async fn create_app_user_server(data: Json<AppUsers>) -> HttpResponse {
         }
     }
 }
+
 #[post("/hash_value")]
 pub async fn hash_value(data: Json<HashValue>) -> impl Responder {
     let value = hash_custom_password(&data.value.clone());
@@ -89,6 +90,7 @@ pub async fn send_otp(data: Json<Otp>) -> impl Responder {
         }
     }
 }
+
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
     println!("done");
