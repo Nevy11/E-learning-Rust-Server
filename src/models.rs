@@ -51,3 +51,16 @@ pub struct HashCheck {
 pub struct ReturnHashCheck {
     pub matches: bool,
 }
+
+#[derive(Deserialize)]
+pub struct Login {
+    pub email_address: String,
+    pub password: String,
+}
+
+#[derive(Serialize)]
+pub struct ReturnLogin {
+    pub is_correct: bool,
+    pub is_success: bool,
+    pub message: String,
+}

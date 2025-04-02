@@ -1,12 +1,12 @@
 use actix_cors::Cors;
 use actix_web::{http, post, web::Json, App, HttpResponse, HttpServer, Responder};
 use e_learning_cargo::{
-    app_users::create_app_user::create_app_user,
+    app_users::{create_app_user::create_app_user, read_app_user::read_one_app_user_email},
     email::email::email,
     hash_password::{hash_password::hash_custom_password, verify_password::verify_password},
     models::{
-        AppUsers, AppUsersReturn, HashCheck, HashValue, Otp, ReturnHashCheck, ReturnHashValue,
-        ReturnOtp,
+        AppUsers, AppUsersReturn, HashCheck, HashValue, Login, Otp, ReturnHashCheck,
+        ReturnHashValue, ReturnLogin, ReturnOtp,
     },
     totp_verification::totp_verification_one::generate_totp,
 };
@@ -91,6 +91,41 @@ pub async fn send_otp(data: Json<Otp>) -> impl Responder {
     }
 }
 
+#[post("/login")]
+pub async fn login(data: Json<Login>) -> impl Responder {
+    let email_of_user = data.email_address.clone();
+    let user_data = read_one_app_user_email(email_of_user);
+    match user_data {
+        Ok(fetched_data) => {
+            let entered_password = data.password.clone();
+            let stored_password = fetched_data.userpassword.clone();
+            let is_correct = verify_password(stored_password, entered_password);
+            if is_correct {
+                let return_data = ReturnLogin {
+                    is_correct: true,
+                    is_success: true,
+                    message: String::new(),
+                };
+                HttpResponse::Ok().json(return_data)
+            } else {
+                let return_data = ReturnLogin {
+                    is_correct: false,
+                    is_success: true,
+                    message: String::new(),
+                };
+                HttpResponse::Ok().json(return_data)
+            }
+        }
+        Err(e) => {
+            let return_data = ReturnLogin {
+                is_correct: false,
+                is_success: false,
+                message: e.to_string(),
+            };
+            HttpResponse::Ok().json(return_data)
+        }
+    }
+}
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
     println!("done");
@@ -110,6 +145,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(hash_value)
             .service(send_otp)
             .service(verify_hash)
+            .service(login)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
