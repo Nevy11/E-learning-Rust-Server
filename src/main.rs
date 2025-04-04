@@ -57,13 +57,33 @@ pub async fn hash_value(data: Json<HashValue>) -> impl Responder {
 pub async fn verify_hash(data: Json<HashCheck>) -> impl Responder {
     let hashed_value = data.hashed_value.clone();
     let entered_value = data.entered_value.clone();
-    let verified = verify_password(hashed_value, entered_value);
-    if verified {
-        let returned_value = ReturnHashCheck { matches: true };
-        HttpResponse::Ok().json(returned_value)
-    } else {
-        let returned_value = ReturnHashCheck { matches: false };
-        HttpResponse::Ok().json(returned_value)
+
+    match verify_password(hashed_value, entered_value) {
+        Ok(verified) => {
+            if verified {
+                let returned_value = ReturnHashCheck {
+                    matches: true,
+                    is_success: true,
+                    message: String::new(),
+                };
+                HttpResponse::Ok().json(returned_value)
+            } else {
+                let returned_value = ReturnHashCheck {
+                    matches: false,
+                    is_success: true,
+                    message: String::new(),
+                };
+                HttpResponse::Ok().json(returned_value)
+            }
+        }
+        Err(e) => {
+            let returned_value = ReturnHashCheck {
+                matches: false,
+                is_success: false,
+                message: e.to_string(),
+            };
+            HttpResponse::Ok().json(returned_value)
+        }
     }
 }
 
@@ -101,22 +121,36 @@ pub async fn login(data: Json<Login>) -> impl Responder {
     match user_data {
         Ok(fetched_data) => {
             let entered_password = data.password.clone();
+            println!("Entered_password\n: {}", entered_password);
             let stored_password = fetched_data.userpassword.clone();
-            let is_correct = verify_password(stored_password, entered_password);
-            if is_correct {
-                let return_data = ReturnLogin {
-                    is_correct: true,
-                    is_success: true,
-                    message: String::new(),
-                };
-                HttpResponse::Ok().json(return_data)
-            } else {
-                let return_data = ReturnLogin {
-                    is_correct: false,
-                    is_success: true,
-                    message: String::new(),
-                };
-                HttpResponse::Ok().json(return_data)
+            println!("Stored_password\n: {}", stored_password);
+            let correct_result = verify_password(stored_password, entered_password);
+            match correct_result {
+                Ok(is_correct) => {
+                    if is_correct {
+                        let return_data = ReturnLogin {
+                            is_correct: true,
+                            is_success: true,
+                            message: String::new(),
+                        };
+                        HttpResponse::Ok().json(return_data)
+                    } else {
+                        let return_data = ReturnLogin {
+                            is_correct: false,
+                            is_success: true,
+                            message: String::new(),
+                        };
+                        HttpResponse::Ok().json(return_data)
+                    }
+                }
+                Err(_) => {
+                    let return_data = ReturnLogin {
+                        is_correct: false,
+                        is_success: false,
+                        message: String::new(),
+                    };
+                    HttpResponse::Ok().json(return_data)
+                }
             }
         }
         Err(e) => {

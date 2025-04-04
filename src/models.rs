@@ -50,6 +50,8 @@ pub struct HashCheck {
 #[derive(Serialize)]
 pub struct ReturnHashCheck {
     pub matches: bool,
+    pub is_success: bool,
+    pub message: String,
 }
 
 #[derive(Deserialize)]
