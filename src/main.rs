@@ -1,12 +1,15 @@
 use actix_cors::Cors;
 use actix_web::{http, post, web::Json, App, HttpResponse, HttpServer, Responder};
 use e_learning_cargo::{
-    app_users::{create_app_user::create_app_user, read_app_user::read_one_app_user_email},
+    app_users::{
+        create_app_user::create_app_user, read_app_user::read_one_app_user_email,
+        update_app_user::update_password_of_user,
+    },
     email::email::email,
     hash_password::{hash_password::hash_custom_password, verify_password::verify_password},
     models::{
         AppUsers, AppUsersReturn, HashCheck, HashValue, Login, Otp, ReturnHashCheck,
-        ReturnHashValue, ReturnLogin, ReturnOtp,
+        ReturnHashValue, ReturnLogin, ReturnOtp, ReturnUpdatePassword, UpdatePassword,
     },
     totp_verification::totp_verification_one::generate_totp,
 };
@@ -126,6 +129,32 @@ pub async fn login(data: Json<Login>) -> impl Responder {
         }
     }
 }
+
+#[post("/update_user_password")]
+pub async fn update_user_password(data: Json<UpdatePassword>) -> impl Responder {
+    let updated_user = update_password_of_user(
+        data.user_email.clone().to_uppercase(),
+        data.new_password.clone(),
+    );
+    match updated_user {
+        Ok(_) => {
+            let returned_data = ReturnUpdatePassword {
+                user_email: data.user_email.clone(),
+                is_success: true,
+                message: String::new(),
+            };
+            HttpResponse::Ok().json(returned_data)
+        }
+        Err(err) => {
+            let returned_data = ReturnUpdatePassword {
+                user_email: data.user_email.clone(),
+                is_success: false,
+                message: err.to_string(),
+            };
+            HttpResponse::Ok().json(returned_data)
+        }
+    }
+}
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
     println!("done");
@@ -146,6 +175,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(send_otp)
             .service(verify_hash)
             .service(login)
+            .service(update_user_password)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

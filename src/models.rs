@@ -64,3 +64,16 @@ pub struct ReturnLogin {
     pub is_success: bool,
     pub message: String,
 }
+
+#[derive(Deserialize)]
+pub struct UpdatePassword {
+    pub user_email: String,
+    pub new_password: String,
+}
+
+#[derive(Serialize)]
+pub struct ReturnUpdatePassword {
+    pub user_email: String,
+    pub is_success: bool,
+    pub message: String,
+}
